@@ -1,0 +1,46 @@
+question,type,passed,seconds,tool_calls,tools_used,answer,error
+What was Oracle's revenue in fiscal 2024?,figure,True,2.8,1,query_financials,"Oracle's fiscal 2024 revenue was **$52.96 billion** (about $53.0 billion), based on the financials database.",
+What was Microsoft's revenue in fiscal 2024?,figure,True,2.8,1,query_financials,"Microsoft's revenue in fiscal 2024 was about $245.1 billion ($2.451220 × 10^11 dollars), per the financials database.",
+What was Salesforce's revenue in fiscal 2024?,figure,True,2.4,1,query_financials,"Salesforce's revenue for fiscal 2024 was about **$34.86 billion** ($34,857 million).",
+What was Adobe's revenue in fiscal 2024?,figure,True,2.3,1,query_financials,"Adobe's fiscal 2024 revenue was about **$21.5 billion** ($21,505,000,000 in the database).",
+What was ServiceNow's revenue in fiscal 2024?,figure,True,2.7,1,query_financials,"ServiceNow's fiscal 2024 revenue was **$10.98 billion** (the database shows $10,984,000,000).",
+What was Microsoft's net income in fiscal 2023?,figure,True,2.3,1,query_financials,"Microsoft's net income in fiscal 2023 was about $72.4 billion ($7.236 × 10^10 US dollars, from the financials table).",
+What was Adobe's operating margin in fiscal 2024?,figure,True,3.2,1,query_financials,"Adobe's operating margin in fiscal 2024 was about **31.3%**. Revenue was $21.5 billion and operating income was $6.74 billion, and the database's stored margin matches that ratio.",
+Which of the five companies had the highest revenue in fiscal 2024?,comparison,True,3.7,1,query_financials,"**Microsoft (MSFT)** had the highest revenue in fiscal 2024, at about **$245.1 billion**.
+
+The others, for comparison:
+- Oracle (ORCL): about $53.0 billion
+- Salesforce (CRM): about $34.9 billion
+- Adobe (ADBE): about $21.5 billion
+- ServiceNow (NOW): about $11.0 billion",
+What does Oracle describe as its main business risks?,filing,True,8.5,3,"search_filing, search_filing, search_filing","Oracle's 10-K groups its risk factors under business and operational, legal and regulatory, and financial headings. The excerpts I could retrieve point to these main risks:
+
+1. **Competition and new products.** Oracle may fail to develop and sell new products and services, integrate acquisitions, or keep up with the pace of change. It faces growing competition from point-solution vendors, from partners that are also rivals, and, after the Cerner acquisition, from large healthcare IT providers such as Epic and Allscripts [ORCL chunk 55].
+
+2. **AI investments.** Oracle says its AI products may not meet customer needs or may lose to competitors' offerings. If it fails to recoup its AI investment, its business and reputation could suffer. It also flags legal and ethical issues around AI, including bias, lack of transparency, and use of copyrighted or personal data [ORCL chunk 75].
+
+3. **Supply chain.** Some components come from a single vendor. Shortages, tariffs, export controls, geopolitical tension (including the Middle East and China–Taiwan), and shipping disruptions could hurt both its cloud/software and hardware businesses. Shortages have also raised production costs that Oracle may not be able to pass on [ORCL chunk 88].
+
+4. **Cloud infrastructure buildout and capital spending.** Oracle expects cloud and software expenses to keep rising as it adds data center capacity in existing and new regions. Delays in the buildout would affect its cloud revenue forecasts [ORCL chunk 212, chunk 146]. Its quarterly results may also swing with the timing of capital expenditures, which depend on supplier pricing, tariffs, and construction schedules [ORCL chunk 146].
+
+5. **Earnings volatility.** Software license and hardware revenue is hard to forecast and tends to close late in each quarter. Because much of the cost base is fixed, revenue shortfalls hit profit disproportionately. Losing a key customer or a large deal delayed could push results well below forecasts [ORCL chunk 145, chunk 146].
+
+6. **Investments and currency.** Oracle holds marketable and non-marketable debt and equity investments, which can produce impairments or fair-value losses. Currency swings can also affect customer demand, revenue, and profitability [ORCL chunk 145, chunk 68].
+
+7. **Government, healthcare, and regulatory exposure.** Government customers bring budget, appropriation, and shutdown risk, along with audits and possible contract termination. The healthcare business is heavily regulated. Oracle also faces environmental, ESG-disclosure, and trade-san",
+What drove Oracle's cloud revenue growth in its most recent fiscal year?,filing,True,7.1,2,"query_financials, search_filing","Oracle's cloud growth in fiscal 2026 came mainly from **cloud infrastructure**, and from customers both buying new cloud contracts and renewing existing ones.
+
+**Headline numbers**
+- Total revenue rose to about $67.4B in FY2026 from $57.4B in FY2025, roughly 17% growth. Operating income was about $20.6B, and the operating margin was 30.6%, roughly flat against 30.8% in FY2025.
+- Cloud was 51% of total revenue in FY2026, up from 43% in FY2025 [ORCL chunk 184].
+
+**What drove the growth**
+- **Cloud infrastructure was the largest contributor.** In the cloud and software segment, cloud infrastructure revenue rose to $18.1B from $10.2B, up 77% reported and 75",
+What was Workday's revenue in fiscal 2024?,out_of_scope,True,3.3,1,query_financials,"The database doesn't include Workday. It covers five companies: Oracle (ORCL), Microsoft (MSFT), Salesforce (CRM), Adobe (ADBE), and ServiceNow (NOW). I can't find Workday's fiscal 2024 revenue in these tools, and I won't give a figure from memory.
+
+If you want, I can pull fiscal 2024 revenue for any of those five companies, or compare them with each other.",
+What is Microsoft's stock price today?,out_of_scope,False,2.2,0,,"I can't get Microsoft's stock price. My tools only cover annual financials (revenue, operating income, net income, and operating margin) for ORCL, MSFT, CRM, ADBE, and NOW, plus excerpts from Oracle's 10-K. Neither includes market data or share prices.
+
+For a current quote, check a market data source such as Yahoo Finance, Bloomberg, or your brokerage app.
+
+I can help with Microsoft's reported financials or compare its results with the other four companies.",
