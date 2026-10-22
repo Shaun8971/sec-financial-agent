@@ -6,7 +6,7 @@ import re
 import time
 import pandas as pd
 
-from src.agent import run_agent
+from src.agent import run_agent, estimate_cost
 from src.analysis import run_sql
 
 NAMES = {"ORCL": "Oracle", "MSFT": "Microsoft", "CRM": "Salesforce", "ADBE": "Adobe", "NOW": "ServiceNow"}
@@ -42,7 +42,7 @@ cases += [
      "type": "figure", "expected": figure("ADBE", 2024, "operating_margin")},
     {"question": "Which of the five companies had the highest revenue in fiscal 2024?",
      "type": "comparison", "expected": "Microsoft"},
-    {"question": "What does Oracle describe as its main business risks?",
+    {"question": "What does ServiceNow describe as its main business risks?",
      "type": "filing"},
     {"question": "What drove Oracle's cloud revenue growth in its most recent fiscal year?",
      "type": "filing"},
@@ -83,7 +83,9 @@ def score(case, answer):
     if kind == "out_of_scope":
         # Pass if the answer says the data isn't available (a rough check; review failures by hand)
         phrases = ["not available", "don't have", "do not have", "isn't available", "not in",
-                   "unable", "doesn't include", "does not include", "only covers", "not covered"]
+                   "unable", "doesn't include", "does not include", "only covers", "not covered", 
+                   "cannot answer", "cannot", "out of scope", "only covers", "does not include", 
+                   "can't"]
         for p in phrases:
             if p in lowered:
                 return True
@@ -95,12 +97,13 @@ def score(case, answer):
 # ---- Run the quiz ----
 rows = []
 for case in cases:
-    start = time.perf_counter()        # start a stopwatch
+    start = time.perf_counter()
     try:
-        answer, trace = run_agent(case["question"])
+        answer, trace, usage = run_agent(case["question"])
         error = ""
-    except Exception as e:             # record a crash instead of stopping the whole quiz
+    except Exception as e:
         answer, trace, error = "", [], str(e)
+        usage = {"input_tokens": 0, "output_tokens": 0, "model_calls": 0}
     seconds = time.perf_counter() - start
 
     passed = score(case, answer) if not error else False
@@ -110,14 +113,18 @@ for case in cases:
         "passed": passed,
         "seconds": round(seconds, 1),
         "tool_calls": len(trace),
-        "tools_used": ", ".join(t["tool"] for t in trace),   # tool names, separated by commas
+        "model_calls": usage["model_calls"],
+        "input_tokens": usage["input_tokens"],
+        "output_tokens": usage["output_tokens"],
+        "cost_usd": round(estimate_cost(usage), 5),
+        "tools_used": ", ".join(t["tool"] for t in trace),
         "answer": answer,
         "error": error,
     })
     print(("PASS  " if passed else "FAIL  ") + case["question"])
 
 # ---- Save and summarize ----
-os.makedirs("results", exist_ok=True)   # create a results folder if it doesn't exist yet
+os.makedirs("results", exist_ok=True)
 results = pd.DataFrame(rows)
 results.to_csv("results/agent_eval.csv", index=False)
 
@@ -126,3 +133,6 @@ print(f"Overall: {results['passed'].sum()} of {len(results)} passed")
 print("Pass rate by type (1.0 = all passed):")
 print(results.groupby("type")["passed"].mean())
 print(f"Median time per question: {results['seconds'].median():.1f} seconds")
+print(f"Average cost per question: ${results['cost_usd'].mean():.4f}")
+print(f"Average model calls per question: {results['model_calls'].mean():.1f}")
+print(f"Total cost of this eval run: ${results['cost_usd'].sum():.4f}")

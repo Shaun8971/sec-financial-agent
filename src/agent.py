@@ -1,6 +1,6 @@
 # src/agent.py
 # The tool-using agent: two tools, the rules, and the loop.
-from src.config import MODEL, client
+from src.config import MODEL, client, INPUT_PRICE_PER_M, OUTPUT_PRICE_PER_M
 from src.analysis import run_sql
 from src.rag import search_filing
 
@@ -68,8 +68,7 @@ AGENT_PROMPT = """- Use search_filing for explanations, strategy, or risks, from
 
 Rules:
 - Get every financial figure with query_financials. Never state figures from memory.
-- Use search_filing for explanations, strategy, or risks. Only Oracle's 10-K is available.
-- Cite filing excerpts by chunk number, like [chunk 412].
+- Use search_filing for explanations, strategy, or risks. All the companies' 10-K's are available.
 - Database amounts are in US dollars; convert to billions in your answer.
 - If the tools don't provide what's needed, say so plainly instead of guessing."""
 
@@ -82,6 +81,11 @@ def run_tool(name, inputs):
         return search_filing(inputs["query"], inputs["ticker"])
     return f"Unknown tool: {name}"
 
+def estimate_cost(usage):
+    # Convert token counts into dollars using the prices in config.py
+    return (usage["input_tokens"] * INPUT_PRICE_PER_M
+            + usage["output_tokens"] * OUTPUT_PRICE_PER_M) / 1_000_000
+
 
 def run_agent(question, max_steps=6):
     # Returns two things: the answer, and a trace of every tool call.
@@ -89,6 +93,7 @@ def run_agent(question, max_steps=6):
     # so now the trace is returned, and the app can display it.
     messages = [{"role": "user", "content": question}]
     trace = []
+    usage = {"input_tokens": 0, "output_tokens": 0, "model_calls": 0}
 
     for step in range(max_steps):
         response = client.messages.create(
@@ -98,6 +103,12 @@ def run_agent(question, max_steps=6):
             tools=tools,
             messages=messages,
         )
+
+     # Add this call's receipt to the running total
+        usage["input_tokens"] += response.usage.input_tokens
+        usage["output_tokens"] += response.usage.output_tokens
+        usage["model_calls"] += 1
+
         messages.append({"role": "assistant", "content": response.content})
 
         # No tool requested: the model is done
@@ -106,7 +117,7 @@ def run_agent(question, max_steps=6):
             for block in response.content:
                 if block.type == "text":
                     answer += block.text
-            return answer, trace
+            return answer, trace, usage
 
         # Run every tool the model asked for, and record each one in the trace
         tool_results = []
@@ -121,4 +132,4 @@ def run_agent(question, max_steps=6):
                 })
         messages.append({"role": "user", "content": tool_results})
 
-    return "Stopped: reached the step limit without a final answer.", trace
+    return "Stopped: reached the step limit without a final answer.", trace, usage

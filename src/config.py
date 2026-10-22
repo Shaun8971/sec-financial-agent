@@ -22,3 +22,8 @@ FILINGS_DIR = "data/filings"    # one text file per company's 10-K
 
 # One shared connection to the LLM, used by every file that calls the model
 client = anthropic.Anthropic(api_key=LLM_API_KEY, base_url=LLM_BASE_URL)
+
+# Model prices in US dollars per million tokens.
+# Look these up for your model on the provider's pricing page, and replace the zeros.
+INPUT_PRICE_PER_M = 0.1
+OUTPUT_PRICE_PER_M = 0.5

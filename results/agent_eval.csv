@@ -1,46 +1,55 @@
-question,type,passed,seconds,tool_calls,tools_used,answer,error
-What was Oracle's revenue in fiscal 2024?,figure,True,2.8,1,query_financials,"Oracle's fiscal 2024 revenue was **$52.96 billion** (about $53.0 billion), based on the financials database.",
-What was Microsoft's revenue in fiscal 2024?,figure,True,2.8,1,query_financials,"Microsoft's revenue in fiscal 2024 was about $245.1 billion ($2.451220 × 10^11 dollars), per the financials database.",
-What was Salesforce's revenue in fiscal 2024?,figure,True,2.4,1,query_financials,"Salesforce's revenue for fiscal 2024 was about **$34.86 billion** ($34,857 million).",
-What was Adobe's revenue in fiscal 2024?,figure,True,2.3,1,query_financials,"Adobe's fiscal 2024 revenue was about **$21.5 billion** ($21,505,000,000 in the database).",
-What was ServiceNow's revenue in fiscal 2024?,figure,True,2.7,1,query_financials,"ServiceNow's fiscal 2024 revenue was **$10.98 billion** (the database shows $10,984,000,000).",
-What was Microsoft's net income in fiscal 2023?,figure,True,2.3,1,query_financials,"Microsoft's net income in fiscal 2023 was about $72.4 billion ($7.236 × 10^10 US dollars, from the financials table).",
-What was Adobe's operating margin in fiscal 2024?,figure,True,3.2,1,query_financials,"Adobe's operating margin in fiscal 2024 was about **31.3%**. Revenue was $21.5 billion and operating income was $6.74 billion, and the database's stored margin matches that ratio.",
-Which of the five companies had the highest revenue in fiscal 2024?,comparison,True,3.7,1,query_financials,"**Microsoft (MSFT)** had the highest revenue in fiscal 2024, at about **$245.1 billion**.
+question,type,passed,seconds,tool_calls,model_calls,input_tokens,output_tokens,cost_usd,tools_used,answer,error
+What was Oracle's revenue in fiscal 2024?,figure,True,3.0,1,2,6,136,7e-05,query_financials,Oracle's fiscal 2024 revenue was $52.961 billion (5.296100e+10 dollars in the database).,
+What was Microsoft's revenue in fiscal 2024?,figure,True,2.4,1,2,6,147,7e-05,query_financials,"Microsoft's revenue in fiscal 2024 was about $245.1 billion (2.451220e+11 US dollars, per the financials database).",
+What was Salesforce's revenue in fiscal 2024?,figure,True,2.0,1,2,6,146,7e-05,query_financials,"Salesforce's (CRM) fiscal 2024 revenue was about **$34.9 billion** ($34,857,000,000 in the database).",
+What was Adobe's revenue in fiscal 2024?,figure,True,2.3,1,2,6,136,7e-05,query_financials,"Adobe's revenue in fiscal 2024 was about $21.5 billion ($21,505,000,000 in the database).",
+What was ServiceNow's revenue in fiscal 2024?,figure,True,3.5,1,2,6,143,7e-05,query_financials,"ServiceNow's fiscal 2024 revenue was about $10.98 billion (10,984,000,000 in US dollars, per the financials database).",
+What was Microsoft's net income in fiscal 2023?,figure,True,2.1,1,2,6,174,9e-05,query_financials,"Microsoft's net income in fiscal 2023 was **$72.4 billion** ($72,361,000,000), according to the financials database.",
+What was Adobe's operating margin in fiscal 2024?,figure,True,2.7,1,2,6,180,9e-05,query_financials,"Adobe's operating margin in fiscal 2024 was **31.3%**. The database lists revenue of about $21.5 billion and operating income of about $6.74 billion, which works out to the same margin.",
+Which of the five companies had the highest revenue in fiscal 2024?,comparison,True,3.2,1,2,6,419,0.00021,query_financials,"**Microsoft (MSFT)** had the highest fiscal 2024 revenue of the five companies, at about **$245.1 billion**.
 
-The others, for comparison:
-- Oracle (ORCL): about $53.0 billion
-- Salesforce (CRM): about $34.9 billion
-- Adobe (ADBE): about $21.5 billion
-- ServiceNow (NOW): about $11.0 billion",
-What does Oracle describe as its main business risks?,filing,True,8.5,3,"search_filing, search_filing, search_filing","Oracle's 10-K groups its risk factors under business and operational, legal and regulatory, and financial headings. The excerpts I could retrieve point to these main risks:
+The rest of the group, in descending order:
 
-1. **Competition and new products.** Oracle may fail to develop and sell new products and services, integrate acquisitions, or keep up with the pace of change. It faces growing competition from point-solution vendors, from partners that are also rivals, and, after the Cerner acquisition, from large healthcare IT providers such as Epic and Allscripts [ORCL chunk 55].
+| Rank | Ticker | FY2024 revenue |
+|---|---|---|
+| 1 | MSFT | $245.1B |
+| 2 | ORCL | $53.0B |
+| 3 | CRM | $34.9B |
+| 4 | ADBE | $21.5B |
+| 5 | NOW | $11.0B |
 
-2. **AI investments.** Oracle says its AI products may not meet customer needs or may lose to competitors' offerings. If it fails to recoup its AI investment, its business and reputation could suffer. It also flags legal and ethical issues around AI, including bias, lack of transparency, and use of copyrighted or personal data [ORCL chunk 75].
+Microsoft's revenue was more than four times Oracle's, the next largest.",
+What does ServiceNow describe as its main business risks?,filing,True,7.8,3,2,6,1312,0.00066,"search_filing, search_filing, search_filing","ServiceNow's 10-K groups its risk factors under headings such as ""Risks Related to the Operation of Our Business"" and ""Risks Related to the Financial Performance or Financial Position of Our Business."" Based on the excerpts I retrieved, the main risks are:
 
-3. **Supply chain.** Some components come from a single vendor. Shortages, tariffs, export controls, geopolitical tension (including the Middle East and China–Taiwan), and shipping disruptions could hurt both its cloud/software and hardware businesses. Shortages have also raised production costs that Oracle may not be able to pass on [ORCL chunk 88].
+1. **Cybersecurity and data security.** ServiceNow stores and processes confidential customer data. It says security incidents have already led to unauthorized access, loss, or disclosure of information, and that phishing and nation-state-backed intrusions are ongoing threats. It warns that a breach, or even a perceived one, could bring litigation, regulatory fines, customer losses, and reputational damage. [NOW chunk 99, chunk 100]
 
-4. **Cloud infrastructure buildout and capital spending.** Oracle expects cloud and software expenses to keep rising as it adds data center capacity in existing and new regions. Delays in the buildout would affect its cloud revenue forecasts [ORCL chunk 212, chunk 146]. Its quarterly results may also swing with the timing of capital expenditures, which depend on supplier pricing, tariffs, and construction schedules [ORCL chunk 146].
+2. **Macroeconomic and geopolitical conditions.** Inflation, interest rates, tariffs, currency swings, recession, warfare, and sanctions could slow customers' digital transformation spending, delay purchases, or reduce renewals. Because contracts typically lock in prices for a few years, cost increases could also squeeze profitability. [NOW chunk 133, chunk 134, chunk 161]
 
-5. **Earnings volatility.** Software license and hardware revenue is hard to forecast and tends to close late in each quarter. Because much of the cost base is fixed, revenue shortfalls hit profit disproportionately. Losing a key customer or a large deal delayed could push results well below forecasts [ORCL chunk 145, chunk 146].
+3. **International operations, anti-corruption, and trade compliance.** Growth outside the U.S., especially in countries with higher corruption or trade-control risk, increases exposure to anti-bribery, export control, and sanctions violations. Tariffs on imports could raise operating costs. [NOW chunk 87, chunk 60]
 
-6. **Investments and currency.** Oracle holds marketable and non-marketable debt and equity investments, which can produce impairments or fair-value losses. Currency swings can also affect customer demand, revenue, and profitability [ORCL chunk 145, chunk 68].
+4. **Public sector and regulated customers.** Selling to governments and heavily regulated entities brings procurement rules and contracting requirements. [NOW chunk 60]
 
-7. **Government, healthcare, and regulatory exposure.** Government customers bring budget, appropriation, and shutdown risk, along with audits and possible contract termination. The healthcare business is heavily regulated. Oracle also faces environmental, ESG-disclosure, and trade-san",
-What drove Oracle's cloud revenue growth in its most recent fiscal year?,filing,True,7.1,2,"query_financials, search_filing","Oracle's cloud growth in fiscal 2026 came mainly from **cloud infrastructure**, and from customers both buying new cloud contracts and renewing existing ones.
+5. **Complex deals and longer sales cycles.** Larger, more complex customer deals involve longer sales cycles, pricing pressure, and harder implementations. [NOW chunk 60, chunk 90]
 
-**Headline numbers**
-- Total revenue rose to about $67.4B in FY2026 from $57.4B in FY2025, roughly 17% growth. Operating income was about $20.6B, and the operating margin was 30.6%, roughly flat against 30.8% in FY2025.
-- Cloud was 51% of total revenue in FY2026, up from 43% in FY2025 [ORCL chunk 184].
+6. **Acquisitions and investments.** Expected benefits may not materialize. Deals can divert management attention, cause impairments, create unknown liabilities, or dilute shareholders. [NOW chunk 90, chunk 93]
 
-**What drove the growth**
-- **Cloud infrastructure was the largest contributor.** In the cloud and software segment, cloud infrastructure revenue rose to $18.1B from $10.2B, up 77% reported and 75",
-What was Workday's revenue in fiscal 2024?,out_of_scope,True,3.3,1,query_financials,"The database doesn't include Workday. It covers five companies: Oracle (ORCL), Microsoft (MSFT), Salesforce (CRM), Adobe (ADBE), and ServiceNow (NOW). I can't find Workday's fiscal 2024 revenue in these tools, and I won't give a figure from memory.
+7. **Revenue recognition timing.** Subscription revenue is recognized ratably over the contract term, so a drop in new subscriptions or renewals may not show up in results right away. [NOW chunk 124]
+
+8. **Climate and physical risks.** Its California headquarters has faced wildfires, drought, heat, and power shutoffs, which could disrupt operations and raise costs. [NOW chunk 124]
+
+9. **Foreign exchange.** Currency fluctuations affect results because the company conducts significant transactions in other currencies. [NOW chunk 134]
+
+The excerpts did not",
+What drove Oracle's cloud revenue growth in its most recent fiscal year?,filing,True,10.0,3,3,8,1643,0.00082,"query_financials, search_filing, search_filing","Oracle's cloud growth in fiscal 2026 was driven mainly by cloud infrastructure, which accounted for most of the increase. Overall revenue rose to about $67.4 billion from $57.4 billion, roughly 17%.
+
+**Revenue context (query_financials):** Revenue was $67.36B in FY2026 versus $57.40B in FY2025. Operating income rose to $20.61B from $17.68B, and net income rose to $17.09B from $12.44B. Operating margin was about 30.6%, nearly flat from 30.8%.
+
+**What drove cloud growth (search_filing):**
+- **Infrastructure led.** Cloud infrastructure revenue was $18.1B, up 77% (75% in constant currency), from $10.2B. Infrastructure contributed 84% of the constant-currency growth in cloud revenue, and applications contributed 16% [ORCL chunk 211].
+- **Customer purchases and renewals.** The filing says the increase in cloud revenue came from customers buying Oracle's applications and infrastructure technologies and renewing their cloud contracts [ORCL chunk 211",
+What was Workday's revenue in fiscal 2024?,out_of_scope,True,3.3,1,2,6,419,0.00021,query_financials,"The database doesn't include Workday. It only covers five companies: Oracle (ORCL), Microsoft (MSFT), Salesforce (CRM), Adobe (ADBE), and ServiceNow (NOW). I can't give Workday's fiscal 2024 revenue from these tools.
 
 If you want, I can pull fiscal 2024 revenue for any of those five companies, or compare them with each other.",
-What is Microsoft's stock price today?,out_of_scope,False,2.2,0,,"I can't get Microsoft's stock price. My tools only cover annual financials (revenue, operating income, net income, and operating margin) for ORCL, MSFT, CRM, ADBE, and NOW, plus excerpts from Oracle's 10-K. Neither includes market data or share prices.
+What is Microsoft's stock price today?,out_of_scope,True,2.3,0,1,4,254,0.00013,,"I can't give you Microsoft's stock price. My tools only cover financial results from the database (revenue, operating income, net income, and operating margin for ORCL, MSFT, CRM, ADBE, and NOW) and excerpts from each company's latest 10-K. Neither includes market data or share prices.
 
-For a current quote, check a market data source such as Yahoo Finance, Bloomberg, or your brokerage app.
-
-I can help with Microsoft's reported financials or compare its results with the other four companies.",
+For the current price, try a market data source such as Yahoo Finance, Google Finance, or your brokerage app. If you want, I can pull Microsoft's recent revenue, operating income, or net income from the database, or search its 10-K for management's explanations of those results.",

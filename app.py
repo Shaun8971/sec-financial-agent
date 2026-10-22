@@ -4,7 +4,7 @@ import os
 import time
 import streamlit as st
 
-from src.agent import run_agent
+from src.agent import run_agent, estimate_cost
 
 st.set_page_config(page_title="EDGAR Analyst", layout="centered")
 
@@ -20,55 +20,67 @@ if "history" not in st.session_state:
 # ---- Password gate: nothing below this shows until the password is right ----
 if not st.session_state.unlocked:
     st.title("EDGAR Analyst")
-    entered = st.text_input("Password", type="password")   # type="password" hides the typing
+    entered = st.text_input("Password", type="password")
     if st.button("Enter"):
-        # If no password is set at all, stay locked rather than open
         if APP_PASSWORD and entered == APP_PASSWORD:
             st.session_state.unlocked = True
-            st.rerun()   # redraw the page, now unlocked
+            st.rerun()
         else:
             st.error("Incorrect password.")
-    st.stop()   # stop drawing here until unlocked
+    st.stop()
 
 
-def show_trace(trace, seconds):
-    # A fold-out section showing which tools the agent used, and with what inputs
-    with st.expander(f"How this was answered: {len(trace)} tool calls, {seconds:.1f} seconds"):
+def show_trace(trace, seconds, usage):
+    # A fold-out section: which tools were used, plus time, tokens, and estimated cost
+    cost = estimate_cost(usage)
+    title = f"How this was answered: {len(trace)} tool calls, {seconds:.1f} s, ${cost:.4f}"
+    with st.expander(title):
+        st.caption(
+            f"{usage['model_calls']} model calls, "
+            f"{usage['input_tokens']:,} tokens in, {usage['output_tokens']:,} tokens out"
+        )
         if not trace:
             st.write("Answered without using any tools.")
         for t in trace:
             st.write(f"**Step {t['step']}: {t['tool']}**")
             if t["tool"] == "query_financials":
-                st.code(t["input"]["sql"], language="sql")   # show the SQL the agent wrote
+                st.code(t["input"]["sql"], language="sql")
             else:
-                st.code(t["input"]["query"], language=None)  # show the search phrase
+                st.code(f"{t['input']['ticker']}: {t['input']['query']}", language=None)
 
 
 def safe_markdown(text):
-    # Streamlit treats text between two $ signs as math formatting, so
-    # "$245 billion and $88 billion" would display wrongly. Escaping each $ prevents that.
+    # Escape $ signs so Streamlit doesn't treat figures like "$245 billion" as math formatting
     return text.replace("$", "\\$")
 
 
-# ---- Sidebar: description, example questions, and a reset button ----
+# ---- Sidebar: description, examples, session cost, and reset ----
 with st.sidebar:
     st.header("About")
     st.write(
         "Answers questions about five enterprise software companies using SEC data. "
-        "Figures come from XBRL filings through SQL; explanations come from each company's "
-        "latest 10-K, with citations."
+        "Figures come from XBRL filings through SQL; explanations come from each "
+        "company's latest 10-K, with citations."
     )
     st.header("Try an example")
     examples = [
         "Which company had the highest operating margin in fiscal 2024?",
-        "How did Microsoft's revenue grow from fiscal 2022 to 2024?",
-        "What does Oracle describe as its main business risks?",
         "How did Oracle's operating margin change in its most recent fiscal year, and what drove it?",
+        "Compare how Salesforce and ServiceNow describe their AI strategy.",
+        "What was Workday's revenue in fiscal 2024?",
     ]
     clicked = None
     for example in examples:
         if st.button(example):
             clicked = example
+
+    # Running total for this visit, so the cost of a session is always visible
+    session_cost = 0.0
+    for item in st.session_state.history:
+        session_cost += estimate_cost(item["usage"])
+    st.header("This session")
+    st.write(f"{len(st.session_state.history)} questions, estimated cost ${session_cost:.4f}")
+
     if st.button("Clear conversation"):
         st.session_state.history = []
         st.rerun()
@@ -80,17 +92,14 @@ st.caption(
     "the agent doesn't remember earlier questions."
 )
 
-# Redraw the conversation so far (remember: the whole script reruns on every click)
 for item in st.session_state.history:
     with st.chat_message("user"):
         st.write(item["question"])
     with st.chat_message("assistant"):
         st.markdown(safe_markdown(item["answer"]))
-        show_trace(item["trace"], item["seconds"])
+        show_trace(item["trace"], item["seconds"], item["usage"])
 
-# A new question: typed in the box at the bottom, or clicked from the examples.
-# 'typed or clicked' means: use the typed question if there is one, otherwise the clicked one.
-typed = st.chat_input("Ask about revenue, margins, growth, or any information from the 10-K's")
+typed = st.chat_input("Ask about revenue, margins, growth, or the companies' 10-Ks")
 question = typed or clicked
 
 if question:
@@ -101,17 +110,18 @@ if question:
     with st.chat_message("user"):
         st.write(question)
     with st.chat_message("assistant"):
-        with st.spinner("Researching..."):   # a loading indicator while the agent works
+        with st.spinner("Researching..."):
             start = time.perf_counter()
             try:
-                answer, trace = run_agent(question)
+                answer, trace, usage = run_agent(question)
             except Exception as e:
                 answer, trace = f"Something went wrong: {e}", []
+                usage = {"input_tokens": 0, "output_tokens": 0, "model_calls": 0}
             seconds = time.perf_counter() - start
         st.markdown(safe_markdown(answer))
-        show_trace(trace, seconds)
+        show_trace(trace, seconds, usage)
 
-    # Save this exchange so it's redrawn on the next click
     st.session_state.history.append(
-        {"question": question, "answer": answer, "trace": trace, "seconds": seconds}
+        {"question": question, "answer": answer, "trace": trace,
+         "seconds": seconds, "usage": usage}
     )
